@@ -2,14 +2,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
 import "./style.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { getLanguages } from "./redux/translateActions";
+import { getLanguages, translateText } from "./redux/translateActions";
 import Select from "react-select";
 
 const App = () => {
   const state = useSelector((store) => store.translate);
   const dispatch = useDispatch();
 
-  const [sourceLang, setSoruceLang] = useState({
+  const [text, setText] = useState("");
+  const [sourceLang, setSourceLang] = useState({
     label: "Turkish",
     value: "tr",
   });
@@ -20,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getLanguages());
-  }, []);
+  }, [dispatch]);
 
   /* Top-Level Code (Tekrar render olmaması için useMemo kullanıldı) */
   const refinedData = useMemo(
@@ -32,6 +33,11 @@ const App = () => {
     [state.languages]
   );
 
+  const handleSwap = () => {
+    setTargetLang(sourceLang);
+    setSourceLang(targetLang);
+  };
+
   return (
     <div id="main-page">
       <div className="container">
@@ -39,13 +45,13 @@ const App = () => {
         <div className="upper">
           <Select
             className="select"
-            onChange={setSoruceLang}
+            onChange={setSourceLang}
             isLoading={state.isLangsLoading}
             isDisabled={state.isLangsLoading}
             value={sourceLang}
             options={refinedData}
-          ></Select>
-          <button>
+          />
+          <button onClick={handleSwap}>
             <FaExchangeAlt />
           </button>
           <Select
@@ -55,13 +61,19 @@ const App = () => {
             isDisabled={state.isLangsLoading}
             value={targetLang}
             options={refinedData}
-          ></Select>
+          />
         </div>
         <div className="middle">
-          <textarea></textarea>
-          <textarea disabled></textarea>
+          <textarea onChange={(e) => setText(e.target.value)}></textarea>
+          <textarea value={state.tranlatedText} disabled></textarea>
         </div>
-        <button>Translate</button>
+        <button
+          onClick={() =>
+            dispatch(translateText({ sourceLang, targetLang, text }))
+          }
+        >
+          Translate
+        </button>
       </div>
     </div>
   );
