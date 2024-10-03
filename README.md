@@ -1,5 +1,7 @@
 # React Translate App
 
+- Bu projede, farklı diller arasında metin çevirisi yapmayı sağlayan bir uygulama geliştirilmiştir. Uygulama, kullanıcıların bir dili diğerine çevirirken rahat bir arayüzle hızlı sonuçlar almasını sağlar.
+
 # Kütüphaneler
 
 - npm i sass
